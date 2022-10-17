@@ -31,7 +31,7 @@ export default {
     #renderCanvas {
         margin: 0;
         padding: 0;
-        width: 960px;
-        height: 540px;
+        width: 100vh;
+        height: 800px;
     }
 </style>
