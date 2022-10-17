@@ -1,35 +1,27 @@
 import { Engine, Scene, ArcRotateCamera, Vector3, MeshBuilder, StandardMaterial, Color3,Color4, HemisphericLight, Nullable, Mesh, Effect, ShaderMaterial, VertexData, VertexBuffer, BaseTexture, MirrorTexture, Plane, SceneLoader} from "@babylonjs/core";
 import '@babylonjs/loaders'
-const createScene = (canvas: Nullable<HTMLCanvasElement | OffscreenCanvas | WebGLRenderingContext | WebGL2RenderingContext>) => {
+const createScene = async (canvas: Nullable<HTMLCanvasElement | OffscreenCanvas | WebGLRenderingContext | WebGL2RenderingContext>) => {
   const engine = new Engine(canvas);
   const scene = new Scene(engine);
   scene.clearColor = new Color4(0, 0, 0);
 
-  const camera = new ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 4, 30, new Vector3(0, 0, 0));
+  const camera = new ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 3, 30, new Vector3(0, 5, 0));
   camera.attachControl(canvas, true);
   camera.useAutoRotationBehavior = true;
   camera.upperBetaLimit = Math.PI / 2  - 0.1;
-  camera.lowerRadiusLimit = 5;
+  camera.lowerRadiusLimit =1;
 
-  var light = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
-  light.intensity = 0.1;
-
- 
- const importPromise = SceneLoader.ImportMeshAsync(["Body1"], "", "switch.obj", scene);
-importPromise.then((result) => {
-    var target = result.meshes[0]
-  barycentric(target);
-  target.material = shaderMaterial
-  target.rotation.x = -1.55
-  target.position.x = -6
-  target.position.y = -0
-  target.position.z = 6
-  texture.renderList =  [target];
+  //var light = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
+  //light.intensity = 0.1;
 
 
-  //// Result has meshes, particleSystems, skeletons, animationGroups and transformNodes
-})
-
+  var result = await SceneLoader.ImportMeshAsync(["Body1"], "", "switch.obj")
+  var model = result.meshes[0]
+  barycentric(model);
+  model.rotation.x = -1.55
+  model.position.x = -6
+  model.position.y = -0
+  model.position.z = 6
 
 /*
   var box = Mesh.CreateBox("box", 2, scene);
@@ -119,6 +111,8 @@ importPromise.then((result) => {
     box2.material = shaderMaterial
     */
     //ground.material = shaderMaterial
+    model.material = shaderMaterial
+
 
 
     var mirror = Mesh.CreateBox("Mirror", 1.0, scene);
@@ -127,7 +121,7 @@ importPromise.then((result) => {
     groundMaterial.diffuseColor = new Color3(0, 0, 0);
     var texture = new MirrorTexture("mirror", 1024, scene, true);
     texture.mirrorPlane =  new Plane(0, -1, 0, 0);
-    //texture.renderList =  [box, box2];
+    texture.renderList =  [model];
     texture.level = 0.2;
     groundMaterial.reflectionTexture = texture
 
